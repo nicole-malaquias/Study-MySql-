@@ -1,0 +1,123 @@
+Desafio MySQL
+
+Bom, diante do cenário, o primeiro passo é montar seu ambiente, portanto instale o seu servidor MySQL com o WorkBench para você executar suas tarefas.
+
+Com ambiente montado, analise a especificação presente no modelo de dados que o projetista te passou (Figura 1) e digite os comandos de DDL (create table, alter table, e outros) para a criação das tabelas com suas chaves primárias e estrangeiras.
+
+Com as tabelas criadas, crie um script em que você faz uma inserção de pelo menos 20 registros na tabela de CLIENTE e 5 registros na tabela CIDADE.
+
+Por fim, já prepare algumas consultas sobre os clientes que podem em alguma hora ser úteis para o departamento de marketing. Por exemplo, vamos pensar em algumas situações:
+
+Como recuperar os clientes de determinado sexo e que moram em certo bairro?
+Como recuperar os clientes cujo DDD seja de São Paulo (11)?
+Pare um pouco e pense pelo menos em mais de 20 situações que envolvam Inserção, Alteração e Exclusão de dados, além de Consultas que podem ser feitas neste banco de dados. Para cada uma escreva o comando SQL equivalente.
+
+Por fim, é isso programador (SQL), assuma seu posto de responsável pelo módulo de Clientes do sistema da Loja Virtual e sucesso! Ao final disponibilize seu trabalho no fórum da seção
+
+
+
+create database loja_virtualdefault
+
+character set utf8
+
+default collate utf8_general_ci;
+
+use loja_virtual;
+
+create table cidade (
+
+cod_cidade int not null auto_increment,
+
+dcr_cidade varchar(50),
+
+primary key (cod_cidade)
+
+);
+
+use loja_virtual;
+
+create table cliente (
+
+codigo int not null auto_increment,
+
+nome varchar(50) not null,
+
+cpf char(11) not null,
+
+contato varchar(20),
+
+data_nasc date,
+
+sexo char(1),
+
+bairro varchar(50),
+
+fk_cod_cidade int not null,
+
+primary key (codigo),
+
+foreign key (fk_cod_cidade) references cidade(cod_cidade)
+
+);
+
+insert into 'cidade' 
+
+(cod_cidade, dcr_vidade)
+
+values 
+
+(default,'São Paulo'),
+
+(default, 'Rio de Janeiro'),
+
+(default, 'Bertioga'),
+
+(default, 'Santos'),
+
+(default, 'Boituva');
+
+
+insert into cliente 
+
+(codigo, nome, cpf, contato, data_nasc, sexo, bairro, cidade)
+
+values
+
+(default, 'Jose', '39907301850', '11992468415', '1999-08-07', 'M', 'Rubi', ' São Paulo'),
+
+(default, 'Maria', '12921514800', '22992841574', '1964-06-21', 'F', 'Barra', 'Rio de Janeiro'),
+
+(default, 'Amanda', '360180240800', '11987965412', '1980-12-01', 'F', 'centro', 'Bertioga'),
+
+(default, 'Anderson', '359846124880', '1199247236', '1990-01-01', 'M', 'centro', 'Santos'),
+
+(default, 'Zelia', '36480012673', '11992841596', '1979-04-12', 'F', 'Lucelia', 'São Paulo'),
+
+(default, 'Davi', '36023645191', '2199284684', '2000-02-12', 'M', 'Barra', 'Rio de Janeiro'),
+
+(default, 'Graziela', '12641516800', '11996002415', '2001-01-19', 'F', 'Rubi', 'São Paulo'),
+
+(default, 'Maria', '39907801410', '11998726240', '1980-08-17', 'F', 'centro', 'Boituva'),
+
+(default, 'Gabriela', '38415975340', '21992841596', '1989-03-09', 'F', 'Grajaú', 'Rio de Janeiro'),
+
+(default, 'Jose', '39982016520', '11992841596', '1950-11-11', 'M', 'Interlagos', 'São Paulo');
+
+select * from cliente where  sexo= 'f' and bairro= 'Rubi'; 
+
+select * from cliente where contato like '%11%'; 
+
+select * from cliente where data_nasc between '1950-01-01' and '1990-01-01';
+
+select * from cidade where not(cidade= 'Rio de Janeiro');
+
+select * from cliente where nome like '%Jose%';
+
+update cliente
+
+set nome= davi
+
+where nome= david;
+
+
+delete from cliente where sexo='M';

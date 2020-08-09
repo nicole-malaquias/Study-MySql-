@@ -1,0 +1,55 @@
+Imagine que você foi destacado para dar suporte às demandas por relatórios e outras informações para uma determinada diretoria. Além disso, a equipe de marketing está em um projeto o qual envolve aprendizagem de máquina, assim, para isso, requer, por vezes, a extração de alguns dados para suas tarefas de mapeamento de padrões sobre os clientes.
+
+Em determinada semana, surgiram algumas demandas que você deve tratar, dentre elas emitir os seguintes dados:
+
+a) Relatório contendo uma lista com todos as categorias de produtos e a quantidade de produtos em cada categoria. Isso será útil para a equipe de vendas tentar diversificar o catálogo, e ordenados por nome da categoria.
+
+b) Relatório com o volume de compras (quantidade de compras e valor total de compras) organizados por mês. Isso servirá de base para a Diretoria Comercial verificar fatos nos meses de maior e de menor volume de vendas.
+
+c) Relatório com todos os clientes com suas características de sexo, data de nascimento ou idade, bairro em que mora e o total de compras nos últimos dois meses. Para total de compras, considere quantidade de compras, o valor e média de valor por compra. Essa consulta servirá de dados para um projeto de aprendizagem de máquina que visa mapear os padrões de consumidores da loja. Como esta demanda será frequente, prepare uma Visão (view) para esse caso e analise as vantagens nessa produção de consultas sob demanda.
+
+O modelo de dados do sistema está exposto a seguir.
+
+
+Além destes sugeridos, imagine outros 5 relatórios que podem ser emitidos a partir do modelo, discuta qual utilidade para o negócio e depois crie visões (views) para eles.
+
+
+A->
+
+SELECT COUNT(1) AS QUANTIDADE,
+       P.COD_CATEGORIA,
+       C.DCR_CATEGORIA
+  FROM PRODUTO P
+INNER JOIN CATEGORIA C
+   ON P.COD_CATEGORIA = C.COD_CATEGORIA
+GROUP BY C.COD_CATEGORIA, C.DCR_CATEGORIA
+ORDER BY C.DCR_CATEGORIA;
+
+
+B->
+
+SELECT COMP.DATA_COMPRA,
+       COUNT(1) AS QUANTIDADE,
+       SUM(COMP.VLR_COMPRA) AS VALOR_TOTAL_MES
+  FROM COMPRA COMP
+GROUP BY COMP.DATA_COMPRA
+ORDER BY COMP.DATA_COMPRA ASC;
+
+C->
+
+VIEW MAPEAMENTO VENDAS
+
+CREATE VIEW MAPEAMENTO_VENDAS_VW AS
+SELECT CLI.SEXO AS SEXO,
+       CLI.DATA_NASC AS DATA_NASC,
+       CLI.BAIRRO AS BAIRRO,
+       COUNT(1) AS QUANTIDADE_COMPRA,
+       COMP.DATA_COMPRA AS DATA_COMPRA,
+       SUM(COMP.VLR_COMPRA) AS VALOR_TOTAL,
+       ROUND(AVG(COMP.VLR_COMPRA), 2) AS MEDIA_COMPRA
+  FROM CLIENTE CLI
+INNER JOIN COMPRA COMP
+   ON CLI.CODIGO = COMP.COD_CLIENTE
+  AND COMP.DATA_COMPRA > (SELECT MAX(DATA_COMPRA) FROM COMPRA) - INTERVAL 2 MONTH
+GROUP BY CLI.SEXO, CLI.DATA_NASC, CLI.BAIRRO;
+
